@@ -228,16 +228,16 @@ function tick() {
                 }
                 var dietary_res = "";
                 if (data.vegetarian){
-                    dietary_res += "🌿 VEGETARIAN";
+                    dietary_res += "*** VEGETARIAN ***";
                 }
                 if (data.halal){
-                    dietary_res += "☪ HALAL";
+                    dietary_res += "*** HALAL ***";
                 }
                 if (data.nut){
-                    dietary_res += "🥜 NUT ALLERGY";
+                    dietary_res += "*** NUT ALLERGY ***";
                 }
                 if (data.vegan){
-                    dietary_res += "🌱 VEGAN";
+                    dietary_res += "*** VEGAN ***";
                 }
                 outputData.innerText = "✅ " + data.name  + " has checked in for: " + tname  + ". ✅ " + " - " + dietary_res;
             });
