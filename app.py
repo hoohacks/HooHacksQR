@@ -26,7 +26,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-heroku = Heroku(app)
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 from models import Participant
