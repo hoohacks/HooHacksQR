@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-from flask.ext.heroku import Heroku
+# from flask.ext.heroku import Heroku
 
 import random
 import settings
@@ -22,6 +22,7 @@ app.secret_key = settings.SECRET_KEY
 
 os.environ["APP_SETTINGS"] = settings.APP_SETTINGS
 #os.environ["DATABASE_URL"] = settings.DB_URL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
