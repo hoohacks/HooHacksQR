@@ -1,6 +1,7 @@
 click==6.7
 Flask==1.0.2
 Flask-SQLAlchemy==2.3.2
+flask-heroku-0.1.9
 DateJS==0.4.0
 gunicorn==19.9.0
 itsdangerous==0.24
