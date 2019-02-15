@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 from flask_sqlalchemy import SQLAlchemy
 import os
 import random
@@ -8,6 +8,11 @@ import json
 from werkzeug.utils import secure_filename
 from config import Config
 from datetime import datetime
+from flask_admin import Admin
+from flask_basicauth import BasicAuth
+from flask_migrate import Migrate
+from flask_admin.contrib.sqla import ModelView as MV
+from werkzeug.exceptions import HTTPException
 
 app = Flask(__name__)
 
@@ -18,17 +23,41 @@ try:
         app.secret_key = settings.SECRET_KEY
         app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
         app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
+        app.config['BASIC_AUTH_USERNAME'] = settings.ADMIN_USERNAME
+        app.config['BASIC_AUTH_PASSWORD'] = settings.ADMIN_PASSWORD
 except:
     app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
     app.secret_key = os.environ['SECRET_KEY']
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ['SQLALCHEMY_TRACK_MODIFICATIONS']
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+    app.config['BASIC_AUTH_USERNAME'] = os.environ['ADMIN_USERNAME']
+    app.config['BASIC_AUTH_PASSWORD'] = os.environ['ADMIN_PASSWORD']
 
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+basic_auth = BasicAuth(app)
+
+class ModelView(MV):
+    def is_accessible(self):
+        if not basic_auth.authenticate():
+            raise AuthException('Not authenticated.')
+        else:
+            return True
+
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(basic_auth.challenge())
+
+class AuthException(HTTPException):
+    def __init__(self, message):
+        super().__init__(message, Response(
+            message, 401,
+            {'WWW-Authenticate': 'Basic realm="Login Required"'}
+        ))
+
 from models import Participant
+
+admin = Admin(app, name='HooHacks', template_mode='bootstrap3')
+admin.add_view(ModelView(Participant, db.session))
 
 @app.route('/', methods=["GET", "POST"])
 def html_page():
