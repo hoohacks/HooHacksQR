@@ -5,7 +5,7 @@ import os
 # from flask.ext.heroku import Heroku
 
 import random
-import settings
+#import settings
 import sys
 from database import db_session
 import json
