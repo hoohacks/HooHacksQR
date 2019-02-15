@@ -53,3 +53,25 @@ You should not commit your database file to GitHub.
 The `Procfile` is necessary if you are deploying to Heroku.
 
 Do not change the `database.py` file.
+
+## Database Setup
+
+In order to get the database fully functional, run `./manage.py db init` to get the database running.
+
+Every time you modify your models, run the following two commands in the following order:
+```
+./manage.py db migrate
+./manage.py db upgrade
+
+```
+
+## Shell Access
+
+In order to get access to the shell, run `./manage.py shell`. This will open a shell without any imports.
+
+In order to modify database entries (rows), once the shell opens run the following lines:
+```
+from app import db
+from models import _
+```
+, where the _ should be replaced by all of the models you wish to import. 

@@ -6,31 +6,38 @@ import settings
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import db
 
-class User(db.Model):
-    __tablename__ = 'user'
+class Participant(db.Model):
+    __tablename__ = 'participants'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(length=50))
-    last_name = db.Column(db.String(length=50))
-    email = db.Column(db.String(length=120), unique=True)
-    password = db.Column(db.String(length=100))
-    hash = db.Column(db.String(length=100)) # used for remembering login device
+    full_name = db.Column(db.String(length=100))
+    number = db.Column(db.Integer)
+    checked_in = db.Column(db.Boolean, default=False)
+    sat_breakfast = db.Column(db.Boolean, default=False)
+    sat_lunch = db.Column(db.Boolean, default=False)
+    sat_dinner = db.Column(db.Boolean, default=False)
+    sun_breakfast = db.Column(db.Boolean, default=False)
+    sun_lunch = db.Column(db.Boolean, default=False)
+    vegetarian = db.Column(db.Boolean, default=False)
+    halal = db.Column(db.Boolean, default=False)
+    nut = db.Column(db.Boolean, default=False)
+    vegan = db.Column(db.Boolean, default=False)
 
-    def __init__(self, first_name, last_name, email, password):
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.password = generate_password_hash(password)
-        self.generate_hash()
-        
-    def generate_hash(self):
-        self.hash = str(uuid.uuid1())
+    def __init__(self, full_name, number, veg=False, hal=False, nut_al=False, vegan=False):
+        self.full_name = full_name
+        self.number = number
+        self.vegetarian = veg
+        self.halal = hal
+        self.nut = nut_al
+        self.vegan = vegan
+
+    def reset(self):
+        self.checked_in = False
+        self.sat_breakfast = False
+        self.sat_lunch = False
+        self.sat_dinner = False
+        self.sun_breakfast = False
+        self.sun_lunch = False
 
     def __repr__(self):
-        return '<User: email {}>'.format(self.email)
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
+        return '<Participant: {}>'.format(self.full_name)
