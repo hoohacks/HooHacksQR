@@ -15,12 +15,12 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['APP_SETTINGS'] = settings.APP_SETTINGS
+app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
 #app.config['SQLALCHEMY_DATABASE_URI'] = settings.DB_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.TRACK_MODIFICATIONS
-app.secret_key = settings.SECRET_KEY
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #settings.TRACK_MODIFICATIONS
+app.secret_key = os.environ['SECRET_KEY']
 
-os.environ["APP_SETTINGS"] = settings.APP_SETTINGS
+# os.environ["APP_SETTINGS"] =
 #os.environ["DATABASE_URL"] = settings.DB_URL
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
