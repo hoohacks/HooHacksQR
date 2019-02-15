@@ -1,11 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
-
-# from flask.ext.heroku import Heroku
-
 import random
-#import settings
 import sys
 from database import db_session
 import json
@@ -15,18 +11,21 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
-#app.config['SQLALCHEMY_DATABASE_URI'] = settings.DB_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #settings.TRACK_MODIFICATIONS
-app.secret_key = os.environ['SECRET_KEY']
-
-# os.environ["APP_SETTINGS"] =
-#os.environ["DATABASE_URL"] = settings.DB_URL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+try:
+    if os.environ['FLASK_ENV'] == "development":
+        import settings
+        app.config['APP_SETTINGS'] = settings.APP_SETTINGS
+        app.secret_key = settings.SECRET_KEY
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
+        app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
+except:
+    app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
+    app.secret_key = os.environ['SECRET_KEY']
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ['SQLALCHEMY_TRACK_MODIFICATIONS']
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-# heroku = Heroku(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 from models import Participant

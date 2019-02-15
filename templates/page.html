@@ -2,10 +2,8 @@
 <head>
   <meta charset="utf-8">
   <title>HooHacks QR Code System</title>
-  <!-- <script src="{{ url_for('static', filename='css/style.css') }}"></script> -->
   <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/jsQR.js') }}"></script>
-  <!-- <script src="{{ url_for('static', filename='js/app.js') }}"></script> -->
   <style>
   body{
     font-family: 'Ropa Sans', sans-serif;
@@ -218,7 +216,7 @@ function tick() {
             task = "sun-lunch";
             tname = "Saturday Lunch";
         }
-        var url = "http://localhost:5000/req/" + task + "/" + code.data;
+        var url = window.location.href + "req/" + task + "/" + code.data;
         if (code.data.length == 0){
             window.allowed = true;
         }
@@ -245,7 +243,7 @@ function tick() {
             });
             setTimeout(function(){
                 window.allowed = true;
-            }, 5000);
+            }, 4000);
         }
     } else if (window.allowed){
         outputMessage.hidden = false;
