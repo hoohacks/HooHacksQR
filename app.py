@@ -60,6 +60,7 @@ admin = Admin(app, name='HooHacks', template_mode='bootstrap3')
 admin.add_view(ModelView(Participant, db.session))
 
 @app.route('/', methods=["GET", "POST"])
+@basic_auth.required
 def html_page():
     return render_template("page.html")
 
