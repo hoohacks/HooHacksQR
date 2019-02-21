@@ -12,10 +12,18 @@
     margin: 0 auto;
     position: relative;
   }
+
   canvas{
       transform: rotateY(180deg);
       -webkit-transform:rotateY(180deg); /* Safari and Chrome */
       -moz-transform:rotateY(180deg);
+  }
+  @media (max-width : 500px) {
+      canvas{
+          transform: rotateY(360deg);
+          -webkit-transform:rotateY(360deg); /* Safari and Chrome */
+          -moz-transform:rotateY(360deg);
+      }
   }
   #githubLink {
     position: absolute;
