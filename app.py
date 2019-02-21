@@ -13,25 +13,35 @@ from flask_basicauth import BasicAuth
 from flask_migrate import Migrate
 from flask_admin.contrib.sqla import ModelView as MV
 from werkzeug.exceptions import HTTPException
+import qrcode
 
 app = Flask(__name__)
 
 try:
-    if os.environ['FLASK_ENV'] == "development":
-        import settings
-        app.config['APP_SETTINGS'] = settings.APP_SETTINGS
-        app.secret_key = settings.SECRET_KEY
-        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
-        app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
-        app.config['BASIC_AUTH_USERNAME'] = settings.ADMIN_USERNAME
-        app.config['BASIC_AUTH_PASSWORD'] = settings.ADMIN_PASSWORD
+    try:
+        if os.environ['FLASK_ENV'] == "development":
+            import settings
+            app.config['APP_SETTINGS'] = settings.APP_SETTINGS
+            app.secret_key = settings.SECRET_KEY
+            app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
+            app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
+            app.config['BASIC_AUTH_USERNAME'] = settings.ADMIN_USERNAME
+            app.config['BASIC_AUTH_PASSWORD'] = settings.ADMIN_PASSWORD
+    except:
+        app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
+        app.secret_key = os.environ['SECRET_KEY']
+        app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ['SQLALCHEMY_TRACK_MODIFICATIONS']
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+        app.config['BASIC_AUTH_USERNAME'] = os.environ['ADMIN_USERNAME']
+        app.config['BASIC_AUTH_PASSWORD'] = os.environ['ADMIN_PASSWORD']
 except:
-    app.config['APP_SETTINGS'] = os.environ['APP_SETTINGS']
-    app.secret_key = os.environ['SECRET_KEY']
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.environ['SQLALCHEMY_TRACK_MODIFICATIONS']
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-    app.config['BASIC_AUTH_USERNAME'] = os.environ['ADMIN_USERNAME']
-    app.config['BASIC_AUTH_PASSWORD'] = os.environ['ADMIN_PASSWORD']
+    import settings
+    app.config['APP_SETTINGS'] = settings.APP_SETTINGS
+    app.secret_key = settings.SECRET_KEY
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
+    app.config['SQLALCHEMY_DATABASE_URI'] = settings.DATABASE_URL
+    app.config['BASIC_AUTH_USERNAME'] = settings.ADMIN_USERNAME
+    app.config['BASIC_AUTH_PASSWORD'] = settings.ADMIN_PASSWORD
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
@@ -63,6 +73,31 @@ admin.add_view(ModelView(Participant, db.session))
 @basic_auth.required
 def html_page():
     return render_template("page.html")
+
+@app.route('/populate', methods=["GET"])
+@basic_auth.required
+def popuate_db():
+    count = len(Participant.query.all())
+    with open("HooHacks_Users.json") as f:
+        for line in f:
+            d = json.loads(line)
+            if (d['status']['confirmed']):
+                ct = Participant.query.filter_by(email=d['email']).count()
+                if ct == 0:
+                    p = Participant(d['profile']['name'],
+                        count, d['email'], d['confirmation']['phoneNumber'],
+                        d['confirmation']['dietaryRestrictions'])
+                    img = qrcode.make(count)
+                    file_name = "Official_QR/" + d['profile']['name']
+                    file_name = "_".join(file_name.split())
+                    file_name +=  ".jpg"
+                    img.save(file_name)
+                    db.session.add(p)
+                    db.session.commit()
+                    print(d['profile']['name'])
+                    count+=1
+                    print(count)
+        return "Completed"
 
 @app.route('/req/<typ>/<num>', methods=["GET", "POST"])
 def change_request(typ, num):
@@ -103,10 +138,7 @@ def change_request(typ, num):
         return jsonify({
             "name": p.full_name,
             "approved": False,
-            "vegetarian": p.vegetarian,
-            "halal": p.halal,
-            "nut": p.nut,
-            "vegan": p.vegan,
+            "dietary": p.dietary,
             "error": "ERROR - request type not found"
         })
     if not err == "":
@@ -119,10 +151,7 @@ def change_request(typ, num):
     return jsonify({
         "name": p.full_name,
         "approved": True,
-        "vegetarian": p.vegetarian,
-        "halal": p.halal,
-        "nut": p.nut,
-        "vegan": p.vegan,
+        "dietary": p.dietary,
         "error": "none"
     })
 

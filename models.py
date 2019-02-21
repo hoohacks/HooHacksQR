@@ -17,18 +17,16 @@ class Participant(db.Model):
     sat_dinner = db.Column(db.Boolean, default=False)
     sun_breakfast = db.Column(db.Boolean, default=False)
     sun_lunch = db.Column(db.Boolean, default=False)
-    vegetarian = db.Column(db.Boolean, default=False)
-    halal = db.Column(db.Boolean, default=False)
-    nut = db.Column(db.Boolean, default=False)
-    vegan = db.Column(db.Boolean, default=False)
+    dietary = db.Column(db.String(length=100))
+    phone_number = db.Column(db.String(length=100))
+    email = db.Column(db.String(length=100))
 
-    def __init__(self, full_name, number, veg=False, hal=False, nut_al=False, vegan=False):
+    def __init__(self, full_name, number, email, phone, dietary=""):
         self.full_name = full_name
         self.number = number
-        self.vegetarian = veg
-        self.halal = hal
-        self.nut = nut_al
-        self.vegan = vegan
+        self.email = email
+        self.phone_number = phone
+        self.dietary = dietary
 
     def reset(self):
         self.checked_in = False
