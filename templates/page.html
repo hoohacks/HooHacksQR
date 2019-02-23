@@ -13,16 +13,11 @@
     position: relative;
   }
 
-  canvas{
-      transform: rotateY(180deg);
-      -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-      -moz-transform:rotateY(180deg);
-  }
-  @media (max-width : 500px) {
+  @media (min-width : 997px) {
       canvas{
-          transform: rotateY(360deg);
-          -webkit-transform:rotateY(360deg); /* Safari and Chrome */
-          -moz-transform:rotateY(360deg);
+          transform: rotateY(180deg);
+          -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+          -moz-transform:rotateY(180deg);
       }
   }
   #githubLink {
