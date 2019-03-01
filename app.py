@@ -78,7 +78,7 @@ def html_page():
 @basic_auth.required
 def popuate_db():
     count = len(Participant.query.all())
-    with open("HooHacks_Users.json") as f:
+    with open("Final_Users.json") as f:
         for line in f:
             d = json.loads(line)
             if (d['status']['confirmed']):
@@ -98,6 +98,34 @@ def popuate_db():
                     count+=1
                     print(count)
         return "Completed"
+
+@app.route('/update', methods=["GET"])
+@basic_auth.required
+def update_ts_db():
+    count = len(Participant.query.all())
+    with open("Final_Users.json") as f:
+        for line in f:
+            d = json.loads(line)
+            if (d['status']['confirmed']):
+                ct = Participant.query.filter_by(email=d['email']).count()
+                if ct == 1:
+                    p = Participant.query.filter_by(email=d['email']).first()
+                    p.tshirt = d['confirmation']['shirtSize']
+                    db.session.add(p)
+                    db.session.commit()
+                    print(d['profile']['name'])
+                    count+=1
+                    print(count)
+        return "Completed"
+
+@app.route("/gen")
+def gen():
+    f = open("data.csv", "a")
+    p = Participant.query.all()
+    for k in p:
+        f.write(k.full_name + "," + str(k.number) + "\n")
+    f.close()
+    return "Done"
 
 @app.route('/req/<typ>/<num>', methods=["GET", "POST"])
 def change_request(typ, num):
@@ -152,7 +180,8 @@ def change_request(typ, num):
         "name": p.full_name,
         "approved": True,
         "dietary": p.dietary,
-        "error": "none"
+        "error": "none",
+        "tshirt": p.tshirt
     })
 
 if __name__ == '__main__':

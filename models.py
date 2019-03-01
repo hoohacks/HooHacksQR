@@ -20,6 +20,7 @@ class Participant(db.Model):
     dietary = db.Column(db.String(length=100))
     phone_number = db.Column(db.String(length=100))
     email = db.Column(db.String(length=100))
+    tshirt = db.Column(db.String(length=100))
 
     def __init__(self, full_name, number, email, phone, dietary=""):
         self.full_name = full_name

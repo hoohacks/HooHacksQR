@@ -4,3 +4,7 @@ __pycache__/
 venv/
 *.csv
 *.json
+*.zip
+Official_QR/
+QR/
+populate.py

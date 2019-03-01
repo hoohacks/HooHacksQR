@@ -117,8 +117,8 @@
   <div id="loadingMessage">🎥 Unable to access video stream (please make sure you have a webcam enabled)</div>
   <canvas id="canvas" hidden></canvas>
   <div id="output" hidden>
-    <div id="outputMessage">No QR code detected.</div>
-    <div hidden><b></b> <span id="outputData"></span><span id="dietary"></span></div>
+    <div style="font-size:24px;" id="outputMessage">No QR code detected.</div>
+    <div style="font-size:24px;" hidden><b></b> <span id="outputData"></span><span id="dietary"></span></div>
   </div>
   <ul class="donate-now" id='rates'>
     <li>
@@ -230,7 +230,7 @@ function tick() {
                     outputData.innerText = "❌ " + data.error + " ❌";
                     return;
                 }
-                outputData.innerText = "✅ " + data.name  + " has checked in for: " + tname  + ". ✅ " + " " + data.dietary;
+                outputData.innerText = "✅ " + data.name  + " has checked in for: " + tname  + ". ✅ " + " " + data.dietary + " " + data.tshirt;
             });
             setTimeout(function(){
                 window.allowed = true;

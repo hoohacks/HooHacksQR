@@ -1,18 +1,17 @@
 import json
 from models import Participant
 from app import db
+import settings
 import qrcode
 
 count = 1
 
 os.environ["DATABASE_URL"] = settings.DATABASE_URL
 
-with open("HooHacks_Users.json") as f:
-    for line in f:
-        d = json.loads(line)
-        if (d['status']['confirmed']):
-            ct = Participant.query.get(email=d['email']).count()
-            print(ct)
+
+        # if (d['status']['confirmed']) and not d['profile']['school'] == "University of Virginia-Main Campus" and not d['profile']['school'] == "Thomas Jefferson High School for Science and Technology":
+        #     # ct = Participant.query.get(email=d['email']).count()
+        #     print(d['profile']['name'])
             # if ct == 0:
             #     p = Participant(d['profile']['name'],
             #         count, d['email'], d['confirmation']['phoneNumber'],
