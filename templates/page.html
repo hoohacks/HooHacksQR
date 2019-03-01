@@ -230,7 +230,7 @@ function tick() {
                     outputData.innerText = "❌ " + data.error + " ❌";
                     return;
                 }
-                outputData.innerText = "✅ " + data.name  + " has checked in for: " + tname  + ". ✅ " + " " + data.dietary + " " + data.tshirt;
+                outputData.innerText = "✅ " + data.name  + " has checked in for: " + tname  + ". ✅ " + " \nDietary: " + data.dietary + " \n T-Shirt: " + data.tshirt;
             });
             setTimeout(function(){
                 window.allowed = true;
